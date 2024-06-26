@@ -1,4 +1,4 @@
-ssh-keygen -N "" -f ~/podman-actions/ovirt.id_rsa
+ssh-keygen -N "" -f /Users/retten/Homelab/podman-actions/ovirt.id_rsa
 
 if [ "x$subscriptionOrg" == "x" ]
 then
