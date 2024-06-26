@@ -2,11 +2,11 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: ubi9-install
-  namespace: {{ namespace }}
+  namespace: REPLACE_ME
 data:
   install.sh: |-
     mkdir /root/.ssh/
-    cp /mnt/demo.id_rsa /root/.ssh/id_rsa
+    cp /mnt/ovirt.id_rsa /root/.ssh/id_rsa
     chmod 700 /root/.ssh/
     chmod 0400 /root/.ssh/id_rsa
     yum install -y openssh-clients rsync

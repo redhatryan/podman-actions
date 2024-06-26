@@ -1,32 +1,48 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ubi9-install
+  namespace: {{ namespace }}
+data:
+  install.sh: |-
+    mkdir /root/.ssh/
+    cp /mnt/demo.id_rsa /root/.ssh/id_rsa
+    chmod 700 /root/.ssh/
+    chmod 0400 /root/.ssh/id_rsa
+    yum install -y openssh-clients rsync
+    /bin/sh
+immutable: false
+---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: ubi8
+  name: ubi9
   annotations:
     app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"kibana"}]'
   labels:
-    app: ubi8
+    app: ubi9
     app.kubernetes.io/part-of: utility
     app.openshift.io/runtime: redhat
     app.openshift.io/name: utility
-  namespace: REPLACE_ME
+  namespace: {{ namespace }}
 spec:
   volumes:
     - configMap:
-        name: ubi8-install
-      name: ubi8-install
+        name: ubi9-install
+      name: ubi9-install
     - secret:
         secretName: id-rsa
       name: id-rsa
   containers:
-    - name: ubi8
-      image: 'registry.access.redhat.com/ubi8/ubi'
+    - name: ubi9
+      image: 'registry.access.redhat.com/ubi9/ubi'
       command: ["/bin/sh"]
       args: ["/usr/local/bin/install.sh"]
       stdin: true
       tty: true
       volumeMounts:
-        - name: ubi8-install
+        - name: ubi9-install
           readOnly: true
           mountPath: /usr/local/bin/install.sh
           subPath: install.sh

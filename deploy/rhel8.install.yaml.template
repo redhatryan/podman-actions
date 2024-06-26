@@ -1,0 +1,41 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: install-scripts
+  namespace: {{ namespace }}
+data:
+  rhel8.sh: |-
+    subscription-manager register --activationkey {{ subscriptionKey }} --org {{ subscriptionOrg }}
+    subscription-manager attach --auto
+    cat << EOF > /etc/yum.repos.d/baseos.repo
+    [rhel-8-for-x86_64-baseos-rpms]
+    name = Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+    baseurl = https://cdn.redhat.com/content/dist/rhel8/$releasever/x86_64/baseos/os
+    enabled = 1
+    gpgcheck = 1
+    gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+    sslverify = 1
+    sslcacert = /etc/rhsm/ca/redhat-uep.pem
+    sslclientkey = /etc/pki/entitlement/6604706093297038311-key.pem
+    sslclientcert = /etc/pki/entitlement/6604706093297038311.pem
+    metadata_expire = 86400
+    enable_metadata = 1
+    ui_repoid_vars = releasever
+    EOF
+    cat << EOF > /etc/yum.repos.d/appstream.repo 
+    [rhel-8-for-x86_64-appstream-rpms]
+    name = Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+    baseurl = https://cdn.redhat.com/content/dist/rhel8/$releasever/x86_64/appstream/os
+    enabled = 1
+    gpgcheck = 1
+    gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+    sslverify = 1
+    sslcacert = /etc/rhsm/ca/redhat-uep.pem
+    sslclientkey = /etc/pki/entitlement/6604706093297038311-key.pem
+    sslclientcert = /etc/pki/entitlement/6604706093297038311.pem
+    metadata_expire = 86400
+    enable_metadata = 1
+    ui_repoid_vars = releasever
+    EOF
+immutable: false
