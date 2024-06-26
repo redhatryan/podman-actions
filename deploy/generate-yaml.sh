@@ -2,7 +2,7 @@ namespace=$1
 touch namespace.last
 lastNamespace=$(cat namespace.last)
 lastNamespace=${lastNamespace:validated-pattern}
-printf -v sshPubKey "%q" $(<../ovirt.id_rsa.pub tr -d '\n' | base64 -w0)
+printf -v sshPubKey "%q" $(<../ovirt.id_rsa.pub tr -d '\n' | base64)
 if [ "x$namespace" == "x" ]
 then
    read -p "What namespace name [$lastNamespace]? " namespace
