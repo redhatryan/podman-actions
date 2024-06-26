@@ -14,7 +14,6 @@ fi
 echo "$namespace" > namespace.last
 source ../subscription.txt
 cat namespace.yaml.template | perl -pe "s/\{\{ namespace \}\}/$namespace/g" > $namespace.yaml
-echo "---" >> $namespace.yaml
 baseDomain=$(oc get --namespace openshift-ingress-operator ingresscontrollers/default -o jsonpath='{.status.domain}')
 if [ -n "$GUID" ]
 then
@@ -31,7 +30,7 @@ cat rhel8.install.yaml.template ubi8.yaml.template | \
   perl -MMIME::Base64 -pe "s/\{\{ sshPubKey \}\}/decode_base64('$sshPubKey')/ge" \
   >> $namespace.yaml
 for name in lab; do
-  cat rhel8.master.vm.yaml.template | \
+  cat rhel8.master.yaml.template | \
       perl -pe "s/\{\{ name \}\}/$name/g" | \
       perl -pe "s/\{\{ namespace \}\}/$namespace/g" | \
       perl -pe "s/\{\{ baseDomain \}\}/$baseDomain/g" | \

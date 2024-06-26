@@ -1,0 +1,103 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: validated-pattern---
+---
+apiVersion: v1
+data:
+  ovirt.id_rsa: LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUFNd0FBQUF0emMyZ3RaVwpReU5UVXhPUUFBQUNBaldoN0hZVS94enNIYW5SeTRSbHNFaWFmenR1QWxZUFVhSHdLOUNjblJsd0FBQUppYVcxZ3RtbHRZCkxRQUFBQXR6YzJndFpXUXlOVFV4T1FBQUFDQWpXaDdIWVUveHpzSGFuUnk0UmxzRWlhZnp0dUFsWVBVYUh3SzlDY25SbHcKQUFBRUFoL2N2Z0VENHNyZnhTYnFFNkcxTWlzaFUzQnR5WThkcjI2Q0ZhOWNkT0d5TmFIc2RoVC9IT3dkcWRITGhHV3dTSgpwL08yNENWZzlSb2ZBcjBKeWRHWEFBQUFEM0p2YjNSQWNtVjBkR1Z1TFcxaFl3RUNBd1FGQmc9PQotLS0tLUVORCBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0K
+kind: Secret
+metadata:
+  creationTimestamp: null
+  name: id-rsa
+  namespace: validated-pattern
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: install-scripts
+  namespace: validated-pattern
+data:
+  rhel8.sh: |-
+    subscription-manager register --activationkey rhel8-gha-virt-validated-pattern --org 11009103
+    subscription-manager attach --auto
+    cat << EOF > /etc/yum.repos.d/baseos.repo
+    [rhel-8-for-x86_64-baseos-rpms]
+    name = Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+    baseurl = https://cdn.redhat.com/content/dist/rhel8/$releasever/x86_64/baseos/os
+    enabled = 1
+    gpgcheck = 1
+    gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+    sslverify = 1
+    sslcacert = /etc/rhsm/ca/redhat-uep.pem
+    sslclientkey = /etc/pki/entitlement/6604706093297038311-key.pem
+    sslclientcert = /etc/pki/entitlement/6604706093297038311.pem
+    metadata_expire = 86400
+    enable_metadata = 1
+    ui_repoid_vars = releasever
+    EOF
+    cat << EOF > /etc/yum.repos.d/appstream.repo 
+    [rhel-8-for-x86_64-appstream-rpms]
+    name = Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+    baseurl = https://cdn.redhat.com/content/dist/rhel8/$releasever/x86_64/appstream/os
+    enabled = 1
+    gpgcheck = 1
+    gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+    sslverify = 1
+    sslcacert = /etc/rhsm/ca/redhat-uep.pem
+    sslclientkey = /etc/pki/entitlement/6604706093297038311-key.pem
+    sslclientcert = /etc/pki/entitlement/6604706093297038311.pem
+    metadata_expire = 86400
+    enable_metadata = 1
+    ui_repoid_vars = releasever
+    EOF
+immutable: false---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ubi9-install
+  namespace: validated-pattern
+data:
+  install.sh: |-
+    mkdir /root/.ssh/
+    cp /mnt/demo.id_rsa /root/.ssh/id_rsa
+    chmod 700 /root/.ssh/
+    chmod 0400 /root/.ssh/id_rsa
+    yum install -y openssh-clients rsync
+    /bin/sh
+immutable: false
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ubi8
+  labels:
+    app: ubi8
+    app.kubernetes.io/part-of: utility
+    app.openshift.io/runtime: redhat
+    app.openshift.io/name: utility
+  namespace: validated-pattern
+spec:
+  volumes:
+    - configMap:
+        name: ubi8-install
+      name: ubi8-install
+    - secret:
+        secretName: id-rsa
+      name: id-rsa
+  containers:
+    - name: ubi8
+      image: 'registry.access.redhat.com/ubi8/ubi'
+      command: ["/bin/sh"]
+      args: ["/usr/local/bin/install.sh"]
+      stdin: true
+      tty: true
+      volumeMounts:
+        - name: ubi8-install
+          readOnly: true
+          mountPath: /usr/local/bin/install.sh
+          subPath: install.sh
+        - name: id-rsa
+          readOnly: true
+          mountPath: /mnt/
