@@ -37,7 +37,7 @@ for name in lab; do
       perl -MMIME::Base64 -pe "s/\{\{ sshPubKey \}\}/decode_base64('$sshPubKey')/ge" \
   >> $namespace.yaml
 done
-cat namespace.yaml.template ../deploy/rhel8.yaml.template | perl -pe "s/\{\{ namespace \}\}/$namespace/g" > ../deploy/rhel8/vm.yaml
+cat namespace.yaml.template ../deploy/rhel8/rhel8.yaml.template | perl -pe "s/\{\{ namespace \}\}/$namespace/g" > ../deploy/rhel8/vm.yaml
 echo "# Apply yaml using:"
 echo "oc apply -f ../rhel/vm.yaml"
 echo "oc apply -f $namespace.yaml"
