@@ -9,4 +9,4 @@ then
    read -p "What is your subscription key? " subscriptionKey
 fi
 echo "export subscriptionOrg=$subscriptionOrg
-export subscriptionKey=$subscriptionKey" > ~/podman-actions/subscription.txt
+export subscriptionKey=$subscriptionKey" > /Users/retten/Homelab/podman-actions/subscription.txt
