@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: ubi9-install
+  name: ubi8-install
   namespace: {{ namespace }}
 data:
   install.sh: |-
@@ -47,3 +47,4 @@ spec:
         - name: id-rsa
           readOnly: true
           mountPath: /mnt/
+---
