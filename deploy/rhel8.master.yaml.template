@@ -86,6 +86,9 @@ spec:
                 - umount /mnt
               user: redhat
               password: redhat
+              groups: [adm, audio, cdrom, dialout…]
+              sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+              shell: /bin/bash
               chpasswd: { expire: False }
               ssh_authorized_keys:
                - {{ sshPubKey }}

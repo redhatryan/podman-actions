@@ -51,6 +51,19 @@ data:
     enable_metadata = 1
     ui_repoid_vars = releasever
     EOF
+    # Create a folder
+    $ mkdir actions-runner && cd actions-runner
+    # Download the latest runner package
+    $ curl -o actions-runner-osx-arm64-2.317.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.317.0/actions-runner-osx-arm64-2.317.0.tar.gz
+    # Optional: Validate the hash
+    $ echo "70b765f32062de395a35676579e25ab433270d7367feb8da85dcfe42560feaba  actions-runner-osx-arm64-2.317.0.tar.gz" | shasum -a 256 -c
+    # Extract the installer
+    $ tar xzf ./actions-runner-osx-arm64-2.317.0.tar.gz
+    # Create the runner and start the configuration experience
+    export RUNNER_ALLOW_RUNASROOT="1"
+    RUNNER_ALLOW_RUNASROOT="1" ./config.sh --url https://github.com/redhatryan/podman-actions --token AYKPCAGDQGAFT2N3E5NLYC3GPSPLS
+    # Last step, run it!
+    ./run.sh
 immutable: false
 ------
 apiVersion: v1
@@ -184,12 +197,16 @@ spec:
               #cloud-config
               hostname: lab
               runcmd: 
-                - mount /dev/disk/by-id/virtio-0000sh /mnt/
+                - sudo mount /dev/disk/by-id/virtio-0000sh /mnt/
                 - bash /mnt/rhel8.sh
                 - umount /mnt
-              user: redhat
-              password: redhat
-              chpasswd: { expire: False }
+              users:
+              - name: root
+                lock_passwd: false
+                password: redhat
+              - name: redhat
+                password: redhat
+                chpasswd: { expire: False }
               ssh_authorized_keys:
                - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHiTB4ckWtWDwIJDSPDRhbUUm2w2W4QCR1fL5Sm7VWgg root@retten-mac
           name: cloudinitdisk
