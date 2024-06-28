@@ -8,7 +8,9 @@ jobs:
     steps:
       - name: Create container
         run: |
+          su -runner -c 
           podman run quay.io/podman/hello
+          "
       - name: Confirm successful deploy
         run: |
           echo "Podman Hello deployed successfully!"
