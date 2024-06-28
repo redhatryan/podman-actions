@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: Create container
         run: |
-          su - runner 
+          su - redhat
           podman run quay.io/podman/hello
       - name: Confirm successful deploy
         run: |
