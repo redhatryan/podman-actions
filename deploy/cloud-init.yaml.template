@@ -1,0 +1,103 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: install-scripts
+  namespace: {{ namespace }}
+data:
+  actions-runner-install.sh: |-
+    subscription-manager register --activationkey rhel-gha-podman --org 11009103
+    subscription-manager attach --auto
+
+    set -o pipefail
+
+    RUNNER_ORG=redhatryan/podman-actions
+    RUNNER_TOKEN=AYKPCAHCOIYVCWQCJKVTX4DGPZFLI
+    RUNNER_LABELS=self-hosted,x64,podman
+
+    # update this to the latest version
+    RUNNER_VERSION=2.317.0
+
+    # Install Podman, expose the service with systemd, then additional packages and stuff:
+    sudo yum -y install podman
+    sudo yum -y install libicu
+    systemctl enable --user podman.socket
+    systemctl start --user podman.socket
+    export DOCKER_HOST="unix://$(podman info -f "{{.Host.RemoteSocket.Path}}")"
+
+    # Create dedicated user
+    sudo groupadd github
+    mkdir -p /home/runner
+    useradd -m -d /home/runner -s /bin/bash runner
+    sudo usermod -a -G github redhat
+    sudo chmod g+rwx /home/runner
+
+    # Download and install runner script
+    cd /home/runner
+    mkdir -p actions-runner
+    cd actions-runner
+    curl -o actions-runner-linux-x64-$RUNNER_VERSION.tar.gz -L https://github.com/actions/runner/releases/download/v$RUNNER_VERSION/actions-runner-linux-x64-$RUNNER_VERSION.tar.gz
+    tar xzf ./actions-runner-linux-x64-$RUNNER_VERSION.tar.gz
+
+    # Configure runner
+    su - runner -c "
+    /home/runner/actions-runner/config.sh --url https://github.com/$RUNNER_ORG --token $RUNNER_TOKEN --labels $RUNNER_LABELS --unattended
+    "
+
+    # Setup systemd scripts
+    cd /home/runner/actions-runner/
+    sudo chcon system_u:object_r:usr_t:s0 ./svc.sh
+    sudo chcon system_u:object_r:usr_t:s0 ./runsvc.sh
+    ./svc.sh install runner
+    sudo ./svc.sh start
+    sudo ./svc.sh status
+immutable: false
+
+
+#cloud-config
+package_update: true
+packages:
+  - podman
+  - git
+
+write_files:
+  - path: /home/your_user/start-container.sh
+    permissions: '0755'
+    content: |
+      #!/bin/bash
+      podman run -d --name ansible-container -v /home/your_user/.ssh:/root/.ssh:ro alpine:latest sh -c "
+      apk add --no-cache ansible git openssh;
+      echo -e '#!/bin/sh\nansible-pull -U https://github.com/your/repo.git' > /callback.sh;
+      chmod +x /callback.sh;
+      while :; do nc -l -p 8080 -e /callback.sh; done"
+
+runcmd:
+  - bash /home/your_user/start-container.sh
+
+final_message: "The system is finally up, after $UPTIME seconds"
+
+
+
+#cloud-config
+package_update: true
+packages:
+  - podman
+  - git
+
+runcmd:
+  - mkdir -p $HOME/.config/containers
+  - echo -e "[registries.search]\nregistries = ['docker.io']" > $HOME/.config/containers/registries.conf
+  - podman pull alpine:latest
+  - podman run -d --name ansible-container alpine:latest
+  - podman exec ansible-container apk add --no-cache ansible
+
+  # Setting up a simple web server for the callback URL
+  - podman exec -d ansible-container sh -c "echo -e '#!/bin/sh\nnc -l -p 8080 -e /callback.sh' > /start-callback.sh"
+  - podman exec ansible-container chmod +x /start-callback.sh
+  - podman exec -d ansible-container sh -c "/start-callback.sh"
+
+  # Creating the callback script
+  - podman exec ansible-container sh -c "echo -e '#!/bin/sh\nansible-pull -U https://github.com/your/repo.git' > /callback.sh"
+  - podman exec ansible-container chmod +x /callback.sh
+
+final_message: "The system is finally up, after $UPTIME seconds"
