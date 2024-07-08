@@ -1,0 +1,15 @@
+name: Deploy Podman Hello to RHEL8 OCP-Virt VM using Docker
+on:
+  push:
+jobs:
+  rhel8-ovirt-deploy:
+    name: Deploy Podman Hello to RHEL8 OCP-Virt VM
+    runs-on: self-hosted
+    steps:
+      - name: Create container
+        run: |
+          # echo redhat | su - redhat -c "docker run quay.io/podman/hello"
+          docker run quay.io/podman/hello
+      - name: Confirm successful deploy
+        run: |
+          echo "Podman Hello deployed successfully using Docker!"
