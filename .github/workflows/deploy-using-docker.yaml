@@ -8,8 +8,8 @@ jobs:
     steps:
       - name: Create container
         run: |
-          # echo redhat | su - redhat -c "docker run quay.io/podman/hello"
-          docker run quay.io/podman/hello
+          echo redhat | su - redhat -c "docker run quay.io/podman/hello"
+          #docker run quay.io/podman/hello
       - name: Confirm successful deploy
         run: |
           echo "Podman Hello deployed successfully using Docker!"
