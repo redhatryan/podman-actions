@@ -20,7 +20,7 @@ data:
 
     # Install Podman, expose the service with systemd, then additional packages and stuff:
     sudo yum -y install podman
-    sudo yum install podman-docker
+    sudo yum -y install podman-docker
     sudo yum -y install libicu
     systemctl enable --user podman.socket
     systemctl start --user podman.socket
