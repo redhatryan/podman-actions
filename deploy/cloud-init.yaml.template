@@ -12,6 +12,7 @@ data:
     set -o pipefail
 
     RUNNER_ORG=redhatryan/podman-actions
+    #update this token!
     RUNNER_TOKEN=AYKPCAHCOIYVCWQCJKVTX4DGPZFLI
     RUNNER_LABELS=self-hosted,x64,podman
 
