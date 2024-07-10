@@ -2,6 +2,6 @@ apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
   name: rhel-vm
-  namespace: your-namespace
+  namespace: validated-pattern
 spec:
   running: true

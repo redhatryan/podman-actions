@@ -2,16 +2,16 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: rhel-vm-deployment
-  namespace: argocd
+  namespace: openshift-gitops
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/your-org/your-repo.git'
+    repoURL: 'https://github.com/redhatryan/podman-actions.git'
     targetRevision: HEAD
-    path: overlays/production
+    path: overlays
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: your-namespace
+    namespace: openshift-gitops
   syncPolicy:
     automated:
       prune: true

@@ -32,4 +32,4 @@ spec:
                 - subscription-manager repos --enable=rhel-7-server-rpms
                 - yum -y update
                 - yum -y install ansible
-                - ansible-pull -U https://github.com/your-org/your-ansible-repo.git -i localhost, ansible-playbook/podman-setup.yaml
+                - ansible-pull -U https://github.com/redhatryan/podman-ansible.git -i localhost, ansible-playbook/podman-setup.yaml
