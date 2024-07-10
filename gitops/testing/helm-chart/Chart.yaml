@@ -1,0 +1,4 @@
+apiVersion: v2
+name: rhel-vm
+description: A Helm chart for deploying RHEL VM
+version: 0.1.0

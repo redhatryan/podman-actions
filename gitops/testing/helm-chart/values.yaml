@@ -1,0 +1,10 @@
+namespace: default
+storageClassName: standard
+pvc:
+  name: rhel-pvc
+  size: 50Gi
+vm:
+  name: rhel-vm
+  memory: 4Gi
+  repoUrl: https://github.com/your-org/ansible-playbook.git
+  githubRunnerToken: ""

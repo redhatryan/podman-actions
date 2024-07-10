@@ -1,6 +1,8 @@
 # Rootless GitHub Actions Container Building Pipeline with Podman and RHEL
 TODO
 
+TODO - ArgoCD webhook receiver with K8s secret for GHA token refresh
+
 ### Dependencies:
 * OpenShift Baremetal cluster with ODF
   * TODO

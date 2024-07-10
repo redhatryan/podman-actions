@@ -1,0 +1,10 @@
+bases:
+  - ../../base
+
+patchesStrategicMerge:
+  - patches.yaml
+
+secretGenerator:
+  - name: github-runner-token
+    literals:
+      - RUNNER_TOKEN=your-real-runner-token

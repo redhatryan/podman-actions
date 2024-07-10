@@ -1,0 +1,42 @@
+name: Update Runner Token
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Runs every hour
+  workflow_dispatch:
+
+jobs:
+  update-token:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install Doppler CLI
+        run: curl -Ls https://cli.doppler.com/install.sh | sh
+
+      - name: Doppler Login
+        run: doppler login --api-key ${{ secrets.DOPPLER_API_KEY }}
+
+      - name: Fetch Doppler Secrets
+        run: doppler run --export > .env
+
+      - name: Generate Runner Token
+        id: generate_token
+        run: |
+          source .env
+          ORG_NAME="your-org"
+          REPO_NAME="your-repo"
+          API_URL="https://api.github.com/repos/$ORG_NAME/$REPO_NAME/actions/runners/registration-token"
+          TOKEN=$(curl -X POST -H "Authorization: token $GH_PAT" $API_URL | jq -r .token)
+          echo "RUNNER_TOKEN=$TOKEN" >> $GITHUB_ENV
+
+      - name: Update Token in Config
+        run: |
+          sed -i "s/githubRunnerToken:.*/githubRunnerToken: \"$RUNNER_TOKEN\"/" deployments/overlays/production/values-production.yaml
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add deployments/overlays/production/values-production.yaml
+          git commit -m "Update GitHub Runner Token"
+          git push

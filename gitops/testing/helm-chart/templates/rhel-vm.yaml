@@ -1,0 +1,35 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: {{ .Values.vm.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  running: false
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: {{ .Values.vm.name }}
+    spec:
+      domain:
+        devices:
+          disks:
+            - disk:
+                bus: virtio
+              name: rootdisk
+        resources:
+          requests:
+            memory: {{ .Values.vm.memory }}
+      volumes:
+        - name: rootdisk
+          persistentVolumeClaim:
+            claimName: {{ .Values.pvc.name }}
+        - cloudInitNoCloud:
+            userData: |
+              #cloud-config
+              runcmd:
+                - subscription-manager register --username your-username --password your-password
+                - subscription-manager attach --auto
+                - subscription-manager repos --enable=rhel-7-server-rpms
+                - yum -y update
+                - yum -y install ansible
+                - doppler run -- ansible-pull -U {{ .Values.vm.repoUrl }} -i localhost, ansible-playbook/podman-setup.yaml
