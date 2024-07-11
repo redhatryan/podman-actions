@@ -5,7 +5,7 @@ patchesStrategicMerge:
   - patches.yaml
 
 secretGenerator:
-  - name: github-runner-token
+  - name: github-runner-envs
     literals:
       - RUNNER_TOKEN=AYKPCACAOD7W5HXV4UTOQJTGR727K
       - RUNNER_ORG=redhatryan/podman-actions
