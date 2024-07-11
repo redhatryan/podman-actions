@@ -4,7 +4,7 @@ metadata:
   name: rhel-vm-deployment
   namespace: openshift-gitops
 spec:
-  project: default
+  project: cluster-config
   source:
     repoURL: 'https://github.com/redhatryan/podman-actions.git'
     targetRevision: HEAD
