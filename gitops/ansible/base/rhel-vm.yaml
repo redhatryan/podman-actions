@@ -82,6 +82,7 @@ spec:
               runcmd: 
                 - sudo subscription-manager register --activationkey rhel-gha-podman --org 11009103
                 - sudo subscription-manager attach --auto
+                - sudo subscription-manager repos --enable ansible-2.9-for-rhel-8-x86_64-rpms
                 - sudo yum -y update
                 - sudo yum -y install ansible
                 - sudo ansible-pull -U https://github.com/redhatryan/podman-ansible.git -i localhost, ansible-playbook/podman-setup.yaml
