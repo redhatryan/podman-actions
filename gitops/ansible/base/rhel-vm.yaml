@@ -84,7 +84,7 @@ spec:
                 - sudo subscription-manager attach --auto
                 - sudo subscription-manager repos --enable ansible-2.9-for-rhel-8-x86_64-rpms
                 - sudo yum -y update
-                - sudo yum -y install ansible git
+                - sudo yum -y install ansible git libicu
                 - sudo ansible-pull -U https://github.com/redhatryan/podman-ansible.git -i localhost, ansible-playbook/podman-setup.yaml
               ssh_authorized_keys:
                - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHiTB4ckWtWDwIJDSPDRhbUUm2w2W4QCR1fL5Sm7VWgg root@retten-mac
