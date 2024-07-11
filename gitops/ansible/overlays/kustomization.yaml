@@ -7,7 +7,7 @@ patchesStrategicMerge:
 secretGenerator:
   - name: github-runner-envs
     literals:
-      - RUNNER_TOKEN=AYKPCACAOD7W5HXV4UTOQJTGR727K
+      - RUNNER_TOKEN=AYKPCAFKJOFM5E4KNIXZQJLGSACV2
       - RUNNER_ORG=redhatryan/podman-actions
       #update this token!
       - RUNNER_LABELS=self-hosted,x64,podman
