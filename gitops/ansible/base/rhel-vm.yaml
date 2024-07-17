@@ -78,18 +78,16 @@ spec:
               users:
               - name: redhat
                 password: redhat
-                sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+                sudo: ALL=(ALL) NOPASSWD:ALL
                 shell: /bin/bash
-                chpasswd: { expire: False }
                 ssh_authorized_keys:
-                  - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHiTB4ckWtWDwIJDSPDRhbUUm2w2W4QCR1fL5Sm7VWgg root@retten-mac
+                  - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHiTB4ckWtWDwIJDSPDRhbUUm2w2W4QCR1fL5Sm7VWgg root@retten-mac"
               - name: runner
                 password: runner
-                sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+                sudo: ALL=(ALL) NOPASSWD:ALL
                 shell: /bin/bash
-                chpasswd: { expire: False }
                 ssh_authorized_keys:
-                  - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHiTB4ckWtWDwIJDSPDRhbUUm2w2W4QCR1fL5Sm7VWgg root@retten-mac
+                  - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHiTB4ckWtWDwIJDSPDRhbUUm2w2W4QCR1fL5Sm7VWgg root@retten-mac"
 
               rh_subscription:
                 activation_key: rhel-gha-podman
