@@ -91,7 +91,7 @@ spec:
                   - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHiTB4ckWtWDwIJDSPDRhbUUm2w2W4QCR1fL5Sm7VWgg root@retten-mac
               rh_subscription:
                 activation-key: rhel-gha-podman
-                org: "11009103}
+                org: "11009103"
                 auto-attach: true
                 enable-repo:
                   - ansible-2.9-for-rhel-8-x86_64-rpms
