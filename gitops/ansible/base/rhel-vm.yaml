@@ -74,21 +74,19 @@ spec:
         - cloudInitNoCloud:
             userData: |-
               #cloud-config
-              chpasswd:
-                users:
-                 - name: redhat
-                   password: redhat
-                   sudo: ALL=(ALL) NOPASSWD:ALL
-                   shell: /bin/bash
-                   ssh_authorized_keys:
-                     - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHiTB4ckWtWDwIJDSPDRhbUUm2w2W4QCR1fL5Sm7VWgg root@retten-mac
-                 - name: runner
-                   password: runner
-                   sudo: ALL=(ALL) NOPASSWD:ALL
-                   shell: /bin/bash              
-                   ssh_authorized_keys:
-                     - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHiTB4ckWtWDwIJDSPDRhbUUm2w2W4QCR1fL5Sm7VWgg root@retten-mac
-                 expire: False
+              users:
+                - name: redhat
+                  passwd: redhat
+                  sudo: ALL=(ALL) NOPASSWD:ALL
+                  shell: /bin/bash
+                  ssh_authorized_keys:
+                    - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHiTB4ckWtWDwIJDSPDRhbUUm2w2W4QCR1fL5Sm7VWgg root@retten-mac
+                - name: runner
+                  passwd: runner
+                  sudo: ALL=(ALL) NOPASSWD:ALL
+                  shell: /bin/bash              
+                  ssh_authorized_keys:
+                    - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHiTB4ckWtWDwIJDSPDRhbUUm2w2W4QCR1fL5Sm7VWgg root@retten-mac
               rh_subscription:
                 activation-key: rhel-gha-podman
                 org: "11009103"
