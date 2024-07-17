@@ -75,14 +75,14 @@ spec:
             userData: |-
               #cloud-config
               users:
-                - name: redhat
-                  password: redhat
-                  sudo: ALL=(ALL) NOPASSWD:ALL
-                  shell: /bin/bash
-                - name: runner
-                  password: runner
-                  sudo: ALL=(ALL) NOPASSWD:ALL
-                  shell: /bin/bash
+               - name: redhat
+                 password: redhat
+                 sudo: ALL=(ALL) NOPASSWD:ALL
+                 shell: /bin/bash
+               - name: runner
+                 password: runner
+                 sudo: ALL=(ALL) NOPASSWD:ALL
+                 shell: /bin/bash
               rh_subscription:
                 activation-key: rhel-gha-podman
                 org: "11009103"
