@@ -1,0 +1,29 @@
+#cloud-config
+
+users:
+  - name: ansible
+    homedir: /home/ansible
+    shell: /bin/bash
+    sudo: 'ALL=(ALL) NOPASSWD:ALL'
+    ssh_authorized_keys:
+      - <SSH plubic key to connect from your laptop>
+
+packages:
+  - unzip
+  - epel-release
+  - git
+
+runcmd:
+# fail2ban part of epel-release repo.
+  - [/usr/bin/dnf, -y, install, fail2ban]
+  - [/usr/bin/dnf, -y, update, google-osconfig-agent]
+  - [/usr/bin/dnf, -y, update, google-guest-agent]
+  - [/usr/bin/systemctl, restart, fail2ban]
+
+ansible:
+  install_method: distro
+  package_name: ansible.noarch
+  pull:
+   #accept_host_key: true
+    url: "https://oauth2:<GitHub access token>@github.com/jewdba/Ansible_OpenVPN-server.git"
+    playbook_name: "playbooks/cloud-init_openvpn-server_setup.yml"

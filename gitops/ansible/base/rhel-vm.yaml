@@ -74,18 +74,45 @@ spec:
         - cloudInitNoCloud:
             userData: |-
               #cloud-config
-              user: redhat
-              password: redhat
-              sudo: ["ALL=(ALL) NOPASSWD:ALL"]
-              shell: /bin/bash
-              chpasswd: { expire: False }
-              runcmd: 
-                - sudo subscription-manager register --activationkey rhel-gha-podman --org 11009103
-                - sudo subscription-manager attach --auto
-                - sudo subscription-manager repos --enable ansible-2.9-for-rhel-8-x86_64-rpms
-                - sudo yum -y update
-                - sudo yum -y install ansible git libicu
-                - sudo ansible-pull -U https://github.com/redhatryan/podman-ansible.git -i localhost, ansible-playbook/podman-setup.yaml
+              
+              users:
+                - name: redhat
+                  password: redhat
+                  sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+                  shell: /bin/bash
+                  chpasswd: { expire: False }
+                - name: runner
+                  password: runner
+                  sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+                  shell: /bin/bash
+                  chpasswd: { expire: False }
+
+              rh_subscription:
+                  activation_key: rhel-gha-podman
+                  org: 11009103
+                  auto-attach: True
+                  enable-repo: ansible-2.9-for-rhel-8-x86_64-rpms
+              
+              packages:
+                - ansible
+                - git
+                - libicu
+
+              #runcmd: 
+              #  - sudo subscription-manager register --activationkey rhel-gha-podman --org 11009103
+              #  - sudo subscription-manager attach --auto
+              #  - sudo subscription-manager repos --enable ansible-2.9-for-rhel-8-x86_64-rpms
+              #  - sudo yum -y update
+              #  - sudo yum -y install ansible git libicu
+              #  - sudo ansible-pull -U https://github.com/redhatryan/podman-ansible.git -i localhost, ansible-playbook/podman-setup.yaml
+              
+              ansible:
+                install_method: distro
+                package_name: ansible.noarch
+                pull:
+                  url: "https://github.com/redhatryan/podman-ansible.git"
+                  playbook_name: ansible-playbook/podman-setup.yaml 
+              
               ssh_authorized_keys:
                - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHiTB4ckWtWDwIJDSPDRhbUUm2w2W4QCR1fL5Sm7VWgg root@retten-mac
           name: cloudinitdisk
