@@ -99,4 +99,4 @@ spec:
                 pull:
                   url: https://github.com/redhatryan/podman-ansible.git
                   playbook_name: ansible-playbook/podman-setup.yaml
-            name: cloudinitdisk
+          name: cloudinitdisk
