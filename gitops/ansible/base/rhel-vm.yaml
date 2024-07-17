@@ -73,30 +73,30 @@ spec:
           name: rootdisk
         - cloudInitNoCloud:
             userData: |-
-            #cloud-config
-            users:
-              - name: redhat
-                password: redhat
-                sudo: ALL=(ALL) NOPASSWD:ALL
-                shell: /bin/bash
-              - name: runner
-                password: runner
-                sudo: ALL=(ALL) NOPASSWD:ALL
-                shell: /bin/bash
-            rh_subscription:
-              activation-key: rhel-gha-podman
-              org: "11009103"
-              auto-attach: true
-              enable-repo:
-                - ansible-2.9-for-rhel-8-x86_64-rpms
-            packages:
-              - ansible
-              - git
-              - libicu
-            ansible:
-              install_method: distro
-              package_name: ansible-core
-              pull:
-                url: https://github.com/redhatryan/podman-ansible.git
-                playbook_name: ansible-playbook/podman-setup.yaml
-          name: cloudinitdisk
+              #cloud-config
+              users:
+                - name: redhat
+                  password: redhat
+                  sudo: ALL=(ALL) NOPASSWD:ALL
+                  shell: /bin/bash
+                - name: runner
+                  password: runner
+                  sudo: ALL=(ALL) NOPASSWD:ALL
+                  shell: /bin/bash
+              rh_subscription:
+                activation-key: rhel-gha-podman
+                org: "11009103"
+                auto-attach: true
+                enable-repo:
+                  - ansible-2.9-for-rhel-8-x86_64-rpms
+              packages:
+                - ansible
+                - git
+                - libicu
+              ansible:
+                install_method: distro
+                package_name: ansible-core
+                pull:
+                  url: https://github.com/redhatryan/podman-ansible.git
+                  playbook_name: ansible-playbook/podman-setup.yaml
+            name: cloudinitdisk
