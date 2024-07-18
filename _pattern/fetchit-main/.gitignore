@@ -1,0 +1,13 @@
+*~
+__pycache__/
+_build/
+venv/
+results/*.png
+results/*.txt
+processed_data/*.dat
+vendor
+_output
+fetchit
+!fetchit/
+config.yaml
+*.env

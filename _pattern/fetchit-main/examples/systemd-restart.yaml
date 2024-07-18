@@ -1,0 +1,10 @@
+targetConfigs:
+- url: https://github.com/containers/fetchit
+  systemd:
+  - name: sysd-ex
+    targetPath: examples/systemd
+    root: true
+    enable: true
+    restart: true
+    schedule: "*/1 * * * *"
+  branch: main

@@ -1,0 +1,4 @@
+prune:
+  All: true
+  Volumes: true
+  schedule: "*/1 * * * *"

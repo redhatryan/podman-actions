@@ -1,0 +1,11 @@
+podmanAutoUpdate:
+  root: true
+targetConfigs:
+- url: https://github.com/containers/fetchit
+  systemd:
+  - name: sysd-ex
+    targetPath: examples/systemd
+    root: true
+    enable: true
+    schedule: "*/5 * * * *"
+  branch: main

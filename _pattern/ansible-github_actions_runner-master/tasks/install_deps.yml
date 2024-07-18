@@ -1,0 +1,14 @@
+---
+# All dependencies derived from https://github.com/actions/runner/blob/main/docs/start/envlinux.md
+- name: Install dependencies on RHEL
+  ansible.builtin.package:
+    name:
+      - lttng-ust
+      - openssl-libs
+      - krb5-libs
+      - zlib
+      - libicu
+    state: present
+    update_cache: true
+  become: true
+  when: (ansible_facts.distribution == "RedHat")

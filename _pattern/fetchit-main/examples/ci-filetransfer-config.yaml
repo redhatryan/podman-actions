@@ -1,0 +1,8 @@
+targetConfigs:
+- url: https://github.com/containers/fetchit
+  filetransfer:
+  - name: ft-example
+    targetPath: examples/filetransfer
+    destinationDirectory: /tmp/ft
+    schedule: "*/1 * * * *"
+  branch: ci

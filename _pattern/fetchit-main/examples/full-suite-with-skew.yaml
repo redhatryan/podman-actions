@@ -1,0 +1,27 @@
+targetConfigs:
+- url: https://github.com/containers/fetchit
+  raw:
+  - name: raw-ex
+    targetPath: examples/raw
+    schedule: "*/1 * * * *"
+    skew: 10000
+    pullImage: false
+  systemd:
+  - name: sysd-ex
+    targetPath: examples/systemd
+    root: true
+    enable: false
+    schedule: "*/1 * * * *"
+    skew: 1000
+  ansible:
+  - name: ans-ex
+    targetPath: examples/ansible
+    sshDirectory: /root/.ssh
+    schedule: "*/1 * * * *"
+  filetransfer:
+  - name: ft-ex
+    targetPath: examples/filetransfer
+    destinationDirectory: /tmp/ft
+    schedule: "*/1 * * * *"
+    skew: 3000
+  branch: main
