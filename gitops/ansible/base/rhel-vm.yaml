@@ -78,10 +78,12 @@ spec:
                 activation-key: "rhel-gha-podman"
                 org: "11009103"
                 auto-attach: true
+              
               packages:
               - ansible-core
-              - git
-              - libicu
+              #- git
+              #- libicu
+              
               user: redhat
               password: redhat
               sudo: ALL=(ALL) NOPASSWD:ALL
@@ -89,6 +91,7 @@ spec:
               chpasswd: { expire: False }
               ssh_authorized_keys:
                - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHiTB4ckWtWDwIJDSPDRhbUUm2w2W4QCR1fL5Sm7VWgg root@retten-mac
+              
               ansible:
                 install_method: distro
                 package_name: ansible-core
