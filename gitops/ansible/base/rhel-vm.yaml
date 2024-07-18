@@ -75,8 +75,8 @@ spec:
             userData: |-
               #cloud-config
               rh_subscription:
-                activation-key: 'rhel-gha-podman'
-                org: '11009103'
+                activation-key: rhel-gha-podman
+                org: 11009103
                 auto-attach: true
                 enable-repo:
                   - ansible-2.9-for-rhel-8-x86_64-rpms
