@@ -76,8 +76,7 @@ spec:
               #cloud-config
               rh_subscription:
                 activation-key: rhel-gha-podman
-                org: 11009103
-                auto-attach: true
+                org: "11009103"
 
               packages:
               - ansible-core
