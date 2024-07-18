@@ -74,6 +74,11 @@ spec:
         - cloudInitNoCloud:
             userData: |-
               #cloud-config
+              packages:
+              - ansible-core
+              - git
+              - libicu
+
               user: runner
               password: runner
               sudo: ALL=(ALL) NOPASSWD:ALL
@@ -88,11 +93,6 @@ spec:
                 auto-attach: true
                 enable-repo:
                   - ansible-2.9-for-rhel-8-x86_64-rpms
-              
-              packages:
-              - ansible-core
-              - git
-              - libicu
               
               ansible:
                 install_method: distro
