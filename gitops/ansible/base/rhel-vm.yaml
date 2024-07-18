@@ -90,9 +90,9 @@ spec:
                   - ansible-2.9-for-rhel-8-x86_64-rpms
               
               packages:
-                - ansible
-                - git
-                - libicu
+              - ansible-core
+              - git
+              - libicu
               
               ansible:
                 install_method: distro
