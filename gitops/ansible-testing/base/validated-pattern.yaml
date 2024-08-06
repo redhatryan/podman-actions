@@ -80,16 +80,16 @@ spec:
                 auto-attach: true
               
               packages:
-              - ansible-core
-              - podman
-              - podman-docker
+              #- ansible-core
+              #- podman
+              #- podman-docker
               #- git
               #- libicu
 
-              runcmd:
-              - sudo systemctl enable --user podman.socket
-              - sudo systemctl start --user podman.socket
-              - export DOCKER_HOST="unix://$(podman info -f "{{.Host.RemoteSocket.Path}}")"
+              #runcmd:
+              #- sudo systemctl enable --user podman.socket
+              #- sudo systemctl start --user podman.socket
+              #- export DOCKER_HOST="unix://$(podman info -f "{{.Host.RemoteSocket.Path}}")"
               
               user: redhat
               password: redhat
@@ -99,10 +99,10 @@ spec:
               ssh_authorized_keys:
                - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHiTB4ckWtWDwIJDSPDRhbUUm2w2W4QCR1fL5Sm7VWgg root@retten-mac
               
-              ansible:
-                install_method: distro
-                package_name: ansible-core
-                pull:
-                  url: https://github.com/redhatryan/podman-ansible.git
-                  playbook_name: validated-pattern/master-playbook.yaml
+              #ansible:
+              #  install_method: distro
+              #  package_name: ansible-core
+              #  pull:
+              #    url: https://github.com/redhatryan/podman-ansible.git
+              #    playbook_name: validated-pattern/master-playbook.yaml
           name: cloudinitdisk

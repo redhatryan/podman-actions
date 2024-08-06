@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: 'https://github.com/redhatryan/podman-actions.git'
     targetRevision: HEAD
-    path: gitops/ansible/overlays
+    path: gitops/ansible-testing/overlays
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: openshift-gitops
