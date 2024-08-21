@@ -15,11 +15,11 @@ spec:
       kind: DataVolume
       metadata:
         creationTimestamp: null
-        name: rhel8-vp
+        name: rhel8-pv
       spec:
         sourceRef:
           kind: DataSource
-          name: rhel8-pv
+          name: rhel8
           namespace: openshift-virtualization-os-images
         storage:
           resources:
@@ -69,7 +69,7 @@ spec:
       terminationGracePeriodSeconds: 180
       volumes:
         - dataVolume:
-            name: rhel8-vp
+            name: rhel8-pv
           name: rootdisk
         - cloudInitNoCloud:
             userData: |-
