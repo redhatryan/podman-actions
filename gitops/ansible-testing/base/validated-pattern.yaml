@@ -19,7 +19,7 @@ spec:
       spec:
         sourceRef:
           kind: DataSource
-          name: rhel8
+          name: rhel8-pv
           namespace: openshift-virtualization-os-images
         storage:
           resources:
