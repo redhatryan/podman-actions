@@ -87,4 +87,5 @@ spec:
               chpasswd: { expire: False }
               ssh_authorized_keys:
                - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHiTB4ckWtWDwIJDSPDRhbUUm2w2W4QCR1fL5Sm7VWgg root@retten-mac
+               - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxfCNZRy38iei4WuCydKGu35BWYvmIZmC+I8HgU3KPBAo3x79xW0fuyyDBk9RMlqEi+QQvCahL24XZ3UraBAkj1IE47jmOfbBcxz7KhdO+jMKN6UBlRlP0UGloi1tYYuijjm/W3vivVp4TCZosAINAI/z+TmNQX+fwdjejo4YhjPdsgmg+M7nyOAyF5xVM7tfWVuguHiqp2DXdGeDr0KuOIOredg09W8tkrScT/tAnrLo1+dZ17AwmGD8TmXOS6Y/GrKVVo8gddpRvadT+PbF8WV8qkjDcseLdZr3ij3cx6ALOYslWtwcvqCV5zWblU0z/f6XArfCl74kQ76ACgMM7 ryanetten@Ryans-MacBook-Pro.local
           name: cloudinitdisk
