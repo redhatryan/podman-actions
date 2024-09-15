@@ -76,10 +76,10 @@ spec:
             userData: |-
               #cloud-config
               #subscription now set globally in ocp-virt settings
-              rh_subscription:
-                activation-key: "rhel-gha-podman"
-                org: "11009103"
-                auto-attach: true
+              #rh_subscription:
+              #  activation-key: "rhel-gha-podman"
+              #  org: "11009103"
+              #  auto-attach: true
               
               user: redhat
               password: redhat
