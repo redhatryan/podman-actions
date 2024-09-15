@@ -74,10 +74,11 @@ spec:
         - cloudInitNoCloud:
             userData: |-
               #cloud-config
-              rh_subscription:
-                activation-key: "rhel-gha-podman"
-                org: "11009103"
-                auto-attach: true
+              #subscription now set globally in ocp-virt settings
+              #rh_subscription:
+              #  activation-key: "rhel-gha-podman"
+              #  org: "11009103"
+              #  auto-attach: true
               
               user: redhat
               password: redhat
