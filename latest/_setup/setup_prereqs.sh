@@ -36,7 +36,7 @@ install_git() {
 
 # Step 1: Update the system packages
 echo "Updating system packages..."
-sudo yum update
+sudo yum update -y
 
 # Step 2: Install Ansible on the local host
 echo "Installing Ansible on local host..."
