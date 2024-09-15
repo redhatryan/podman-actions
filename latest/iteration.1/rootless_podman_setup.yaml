@@ -2,6 +2,8 @@
 - name: Set up rootless Podman for GitHub Actions with SELinux
   hosts: localhost
   connection: local 
+  vars:
+    ansible_user: runner  # Set ansible_user to 'runner'
   become: yes
 
   tasks:
