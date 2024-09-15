@@ -2,7 +2,7 @@
 - name: Set up rootless Podman for GitHub Actions with SELinux on localhost
   hosts: localhost
   become: yes
-  connection: local  # Ensures it runs on localhost
+  connection: local
   vars:
     ansible_user: runner  # Set ansible_user to 'runner'
 
@@ -45,7 +45,7 @@
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
         mode: '0755'
-      when: not ansible_facts['filesystem']['/home/{{ ansible_user }}/actions-runner'] is defined
+      when: ansible_facts['filesystem']['/home/' + ansible_user + '/actions-runner'] is not defined
 
     - name: Download GitHub Actions self-hosted runner
       get_url:
@@ -60,6 +60,14 @@
         remote_src: yes
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
+
+    - name: Ensure svc.sh script is executable
+      file:
+        path: /home/{{ ansible_user }}/actions-runner/svc.sh
+        mode: '0755'
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        state: file
 
     - name: Install GitHub Actions self-hosted runner
       shell: |
