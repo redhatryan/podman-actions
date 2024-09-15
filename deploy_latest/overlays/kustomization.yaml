@@ -1,8 +1,8 @@
 resources:
   - ../base
 
-patches:
- - patches.yaml
+#patches:
+# - patches.yaml
 
 #secretGenerator:
 #  - name: github-runner-envs
