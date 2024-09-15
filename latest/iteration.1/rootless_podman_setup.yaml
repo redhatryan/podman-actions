@@ -61,6 +61,16 @@
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
 
+    - name: Verify if svc.sh script exists
+      stat:
+        path: /home/{{ ansible_user }}/actions-runner/svc.sh
+      register: svc_sh_status
+
+    - name: Fail if svc.sh is missing
+      fail:
+        msg: "svc.sh script is missing in /home/{{ ansible_user }}/actions-runner"
+      when: not svc_sh_status.stat.exists
+
     - name: Ensure svc.sh script is executable
       file:
         path: /home/{{ ansible_user }}/actions-runner/svc.sh
@@ -68,6 +78,7 @@
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
         state: file
+      when: svc_sh_status.stat.exists
 
     - name: Install GitHub Actions self-hosted runner
       shell: |
@@ -75,6 +86,7 @@
       args:
         chdir: /home/{{ ansible_user }}/actions-runner
       become_user: "{{ ansible_user }}"
+      when: svc_sh_status.stat.exists
 
     - name: Enable rootless Podman
       shell: |
@@ -99,3 +111,4 @@
       args:
         chdir: /home/{{ ansible_user }}/actions-runner
       become_user: "{{ ansible_user }}"
+      when: svc_sh_status.stat.exists
