@@ -1,5 +1,6 @@
 resources:
   - ../base
+  - service.yaml
 
 #patches:
 # - patches.yaml

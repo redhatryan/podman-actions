@@ -1,7 +1,0 @@
-apiVersion: kubevirt.io/v1
-kind: VirtualMachine
-metadata:
-  name: rhel8-vp
-  namespace: validated-pattern
-spec:
-  running: true

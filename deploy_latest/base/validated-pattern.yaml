@@ -36,6 +36,7 @@ spec:
       labels:
         kubevirt.io/domain: rhel8-vp
         kubevirt.io/size: small
+        special: key
     spec:
       architecture: amd64
       domain:
