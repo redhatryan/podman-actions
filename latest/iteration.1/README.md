@@ -25,4 +25,4 @@ This playbook performs the following tasks in order:
 
 ```bash
 git clone https://github.com/redhatryan/podman-actions.git
-cd latest/iteration.1/
+cd podman/actions/latest/iteration.1/
