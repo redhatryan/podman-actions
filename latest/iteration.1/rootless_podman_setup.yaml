@@ -1,7 +1,8 @@
 ---
-- name: Set up rootless Podman for GitHub Actions with SELinux
-  hosts: all
+- name: Set up rootless Podman for GitHub Actions with SELinux on localhost
+  hosts: localhost
   become: yes
+  connection: local  # Ensures it runs on localhost
   vars:
     ansible_user: runner  # Set ansible_user to 'runner'
 
