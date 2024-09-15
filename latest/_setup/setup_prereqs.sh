@@ -7,18 +7,18 @@ check_install_package() {
     PACKAGE=$1
     if ! dpkg -s $PACKAGE >/dev/null 2>&1; then
         echo "$PACKAGE is not installed. Installing..."
-        sudo apt-get install -y $PACKAGE
+        sudo yum install -y $PACKAGE
     else
         echo "$PACKAGE is already installed."
     fi
 }
 
-# Function to install Ansible
+# Function to install Ansible Core
 install_ansible() {
     if ! command -v ansible >/dev/null 2>&1; then
         echo "Ansible is not installed. Installing Ansible..."
-        sudo apt-get update
-        sudo apt-get install -y ansible
+        sudo yum update
+        sudo yum install -y ansible-core
     else
         echo "Ansible is already installed."
     fi
@@ -28,7 +28,7 @@ install_ansible() {
 install_git() {
     if ! command -v git >/dev/null 2>&1; then
         echo "Git is not installed. Installing Git..."
-        sudo apt-get install -y git
+        sudo yum install -y git
     else
         echo "Git is already installed."
     fi
@@ -36,7 +36,7 @@ install_git() {
 
 # Step 1: Update the system packages
 echo "Updating system packages..."
-sudo apt-get update
+sudo yum update
 
 # Step 2: Install Ansible on the local host
 echo "Installing Ansible on local host..."
