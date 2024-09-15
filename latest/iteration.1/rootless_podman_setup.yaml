@@ -1,12 +1,26 @@
 ---
 - name: Set up rootless Podman for GitHub Actions with SELinux
-  hosts: localhost
-  connection: local 
+  hosts: all
+  become: yes
   vars:
     ansible_user: runner  # Set ansible_user to 'runner'
-  become: yes
 
   tasks:
+    - name: Create the 'runner' user
+      user:
+        name: "{{ ansible_user }}"
+        shell: /bin/bash
+        create_home: yes
+        state: present
+
+    - name: Create the home directory for the 'runner' user
+      file:
+        path: /home/{{ ansible_user }}
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0755'
+
     - name: Install dependencies for Podman
       package:
         name: 
@@ -30,6 +44,7 @@
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
         mode: '0755'
+      when: not ansible_facts['filesystem']['/home/{{ ansible_user }}/actions-runner'] is defined
 
     - name: Download GitHub Actions self-hosted runner
       get_url:
