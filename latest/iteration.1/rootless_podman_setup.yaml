@@ -1,6 +1,7 @@
 ---
 - name: Set up rootless Podman for GitHub Actions with SELinux
-  hosts: all
+  hosts: localhost
+  connection: local 
   become: yes
 
   tasks:
