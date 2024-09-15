@@ -1,0 +1,5 @@
+---
+- name: Enable rootless Podman for the user
+  shell: |
+    loginctl enable-linger {{ ansible_user }}
+  become_user: "{{ ansible_user }}"

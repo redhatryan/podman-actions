@@ -1,0 +1,36 @@
+---
+- name: Ensure GitHub Actions self-hosted runner directory exists
+  file:
+    path: /home/{{ ansible_user }}/actions-runner
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+
+- name: Download GitHub Actions self-hosted runner
+  get_url:
+    url: https://github.com/actions/runner/releases/download/v2.308.0/actions-runner-linux-x64-2.308.0.tar.gz
+    dest: /home/{{ ansible_user }}/actions-runner/actions-runner.tar.gz
+    mode: '0755'
+
+- name: Extract GitHub Actions self-hosted runner
+  unarchive:
+    src: /home/{{ ansible_user }}/actions-runner/actions-runner.tar.gz
+    dest: /home/{{ ansible_user }}/actions-runner
+    remote_src: yes
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Install GitHub Actions self-hosted runner
+  shell: |
+    ./svc.sh install {{ ansible_user }}
+  args:
+    chdir: /home/{{ ansible_user }}/actions-runner
+  become_user: "{{ ansible_user }}"
+
+- name: Start GitHub Actions self-hosted runner service
+  shell: |
+    ./svc.sh start
+  args:
+    chdir: /home/{{ ansible_user }}/actions-runner
+  become_user: "{{ ansible_user }}"

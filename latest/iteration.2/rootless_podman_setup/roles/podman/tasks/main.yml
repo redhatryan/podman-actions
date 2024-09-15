@@ -1,0 +1,7 @@
+---
+- name: Install Podman and Podman-docker
+  package:
+    name: 
+      - podman
+      - podman-docker
+    state: present

@@ -1,0 +1,108 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: rhel8-vp
+  namespace: validated-pattern
+  labels:
+    app: rhel8-vp
+    vm.kubevirt.io/template: rhel8-server-small
+    vm.kubevirt.io/template.namespace: openshift
+    vm.kubevirt.io/template.revision: '1'
+    vm.kubevirt.io/template.version: v0.27.0
+spec:
+  dataVolumeTemplates:
+    - apiVersion: cdi.kubevirt.io/v1beta1
+      kind: DataVolume
+      metadata:
+        creationTimestamp: null
+        name: rhel8-pv
+      spec:
+        sourceRef:
+          kind: DataSource
+          name: rhel8
+          namespace: openshift-virtualization-os-images
+        storage:
+          resources:
+            requests:
+              storage: 30Gi
+  running: true
+  template:
+    metadata:
+      annotations:
+        vm.kubevirt.io/flavor: small
+        vm.kubevirt.io/os: rhel8
+        vm.kubevirt.io/workload: server
+      creationTimestamp: null
+      labels:
+        kubevirt.io/domain: rhel8-vp
+        kubevirt.io/size: small
+    spec:
+      architecture: amd64
+      domain:
+        cpu:
+          cores: 2
+          sockets: 1
+          threads: 1
+        devices:
+          disks:
+            - disk:
+                bus: virtio
+              name: rootdisk
+            - disk:
+                bus: virtio
+              name: cloudinitdisk
+          interfaces:
+            - macAddress: '02:85:c4:00:00:01'
+              masquerade: {}
+              model: virtio
+              name: default
+          networkInterfaceMultiqueue: true
+          rng: {}
+        machine:
+          type: pc-q35-rhel9.2.0
+        memory:
+          guest: 8Gi
+        resources: {}
+      networks:
+        - name: default
+          pod: {}
+      terminationGracePeriodSeconds: 180
+      volumes:
+        - dataVolume:
+            name: rhel8-pv
+          name: rootdisk
+        - cloudInitNoCloud:
+            userData: |-
+              #cloud-config
+              rh_subscription:
+                activation-key: "rhel-gha-podman"
+                org: "11009103"
+                auto-attach: true
+              
+              packages:
+              #- ansible-core
+              #- podman
+              #- podman-docker
+              #- git
+              #- libicu
+
+              #runcmd:
+              #- sudo systemctl enable --user podman.socket
+              #- sudo systemctl start --user podman.socket
+              #- export DOCKER_HOST="unix://$(podman info -f "{{.Host.RemoteSocket.Path}}")"
+              
+              user: redhat
+              password: redhat
+              sudo: ALL=(ALL) NOPASSWD:ALL
+              shell: /bin/bash
+              chpasswd: { expire: False }
+              ssh_authorized_keys:
+               - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHiTB4ckWtWDwIJDSPDRhbUUm2w2W4QCR1fL5Sm7VWgg root@retten-mac
+              
+              #ansible:
+              #  install_method: distro
+              #  package_name: ansible-core
+              #  pull:
+              #    url: https://github.com/redhatryan/podman-ansible.git
+              #    playbook_name: validated-pattern/master-playbook.yaml
+          name: cloudinitdisk

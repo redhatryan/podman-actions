@@ -1,0 +1,16 @@
+---
+- name: Install SELinux dependencies
+  package:
+    name:
+      - selinux-policy
+      - selinux-policy-targeted
+      - policycoreutils
+      - policycoreutils-python-utils
+    state: present
+
+- name: Configure SELinux for Podman and GitHub Actions runner
+  command: |
+    sudo setsebool container_manage_cgroup 1
+    sudo semanage permissive -a container_t
+  args:
+    warn: no

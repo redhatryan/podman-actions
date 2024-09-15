@@ -1,0 +1,74 @@
+---
+- name: Set up rootless Podman for GitHub Actions with SELinux
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install dependencies for Podman
+      package:
+        name: 
+          - podman
+          - podman-docker
+        state: present
+
+    - name: Install SELinux dependencies
+      package:
+        name:
+          - selinux-policy
+          - selinux-policy-targeted
+          - policycoreutils
+          - policycoreutils-python-utils
+        state: present
+
+    - name: Ensure GitHub Actions self-hosted runner directory exists
+      file:
+        path: /home/{{ ansible_user }}/actions-runner
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0755'
+
+    - name: Download GitHub Actions self-hosted runner
+      get_url:
+        url: https://github.com/actions/runner/releases/download/v2.308.0/actions-runner-linux-x64-2.308.0.tar.gz
+        dest: /home/{{ ansible_user }}/actions-runner/actions-runner.tar.gz
+        mode: '0755'
+
+    - name: Extract GitHub Actions self-hosted runner
+      unarchive:
+        src: /home/{{ ansible_user }}/actions-runner/actions-runner.tar.gz
+        dest: /home/{{ ansible_user }}/actions-runner
+        remote_src: yes
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+
+    - name: Install GitHub Actions self-hosted runner
+      shell: |
+        ./svc.sh install {{ ansible_user }}
+      args:
+        chdir: /home/{{ ansible_user }}/actions-runner
+      become_user: "{{ ansible_user }}"
+
+    - name: Enable rootless Podman
+      shell: |
+        loginctl enable-linger {{ ansible_user }}
+      become_user: "{{ ansible_user }}"
+
+    - name: Set up SELinux permissions for rootless Podman
+      command: |
+        sudo setsebool container_manage_cgroup 1
+      args:
+        warn: no
+
+    - name: Configure SELinux for Podman and GitHub Actions runner
+      command: |
+        sudo semanage permissive -a container_t
+      args:
+        warn: no
+
+    - name: Start GitHub Actions self-hosted runner service
+      shell: |
+        ./svc.sh start
+      args:
+        chdir: /home/{{ ansible_user }}/actions-runner
+      become_user: "{{ ansible_user }}"

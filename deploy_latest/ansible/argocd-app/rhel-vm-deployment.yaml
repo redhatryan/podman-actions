@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rhel-vm-deployment
+  namespace: openshift-gitops
+spec:
+  project: cluster-config
+  source:
+    repoURL: 'https://github.com/redhatryan/podman-actions.git'
+    targetRevision: HEAD
+    path: gitops/ansible/overlays
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: openshift-gitops
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
