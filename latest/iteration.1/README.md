@@ -24,5 +24,5 @@ This playbook performs the following tasks in order:
 ### 1. Clone the repository or download the playbook file.
 
 ```bash
-git clone <your-repository-url>
-cd <repository-directory>
+git clone https://github.com/redhatryan/podman-actions.git
+cd latest/iteration.1/
