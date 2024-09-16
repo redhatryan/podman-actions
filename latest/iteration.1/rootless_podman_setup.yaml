@@ -72,7 +72,7 @@
         remote_src: yes
 
     - name: Install missing dependencies for .NET Core 6.0
-      command: ./bin/installdependencies.sh
+      command: sudo ./bin/installdependencies.sh
       args:
         chdir: "{{ runner_home }}/actions-runner"
       become: yes
