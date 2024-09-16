@@ -1,113 +1,120 @@
 ---
-- name: Set up rootless Podman for GitHub Actions with SELinux on localhost
+- name: Set up rootless Podman with GitHub Actions and SELinux
   hosts: localhost
   become: yes
   connection: local
   vars:
-    ansible_user: runner  # Set ansible_user to 'runner'
+    runner_user: runner
+    runner_home: /home/runner
+    runner_version: 2.317.0
+    github_org: redhatryan/podman-actions
+    github_token: "{{ lookup('env', 'GITHUB_TOKEN') }}"  # Secure the token
+    runner_labels: self-hosted,x64,podman
 
   tasks:
-    - name: Create the 'runner' user
-      user:
-        name: "{{ ansible_user }}"
-        shell: /bin/bash
-        create_home: yes
-        state: present
+    - name: Check if SELinux is enabled
+      command: getenforce
+      register: selinux_status
+      ignore_errors: yes
 
-    - name: Create the home directory for the 'runner' user
-      file:
-        path: /home/{{ ansible_user }}
-        state: directory
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-        mode: '0755'
+    - name: Set SELinux to enforcing if enabled
+      command: setenforce 1
+      when: selinux_status.stdout == "Permissive" or selinux_status.stdout == "Enforcing"
 
-    - name: Install dependencies for Podman
-      package:
-        name: 
+    - name: Update all packages
+      yum:
+        name: '*'
+        state: latest
+
+    - name: Install required packages
+      yum:
+        name:
           - podman
           - podman-docker
-        state: present
-
-    - name: Install SELinux dependencies
-      package:
-        name:
-          - selinux-policy
-          - selinux-policy-targeted
-          - policycoreutils
           - policycoreutils-python-utils
+          - curl
+          - jq
         state: present
 
-    - name: Ensure GitHub Actions self-hosted runner directory exists
+    - name: Create runner user
+      user:
+        name: "{{ runner_user }}"
+        shell: /bin/bash
+        create_home: yes
+
+    - name: Add runner user to sudoers
+      lineinfile:
+        path: /etc/sudoers.d/{{ runner_user }}
+        create: yes
+        line: '{{ runner_user }} ALL=(ALL) NOPASSWD:ALL'
+
+    - name: Enable and start rootless Podman socket
+      become_user: "{{ runner_user }}"
+      systemd:
+        name: podman.socket
+        state: started
+        enabled: yes
+        scope: user
+        daemon_reload: yes
+
+    - name: Set Docker Host environment variable
+      lineinfile:
+        path: /home/{{ runner_user }}/.bashrc
+        line: 'export DOCKER_HOST="unix://$(podman info -f "{{.Host.RemoteSocket.Path}}")"'
+        state: present
+
+    - name: Enable lingering for runner user
+      command: loginctl enable-linger {{ runner_user }}
+
+    - name: Create GitHub Actions runner directory
       file:
-        path: /home/{{ ansible_user }}/actions-runner
+        path: "{{ runner_home }}/actions-runner"
         state: directory
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-        mode: '0755'
+        owner: "{{ runner_user }}"
+        group: "{{ runner_user }}"
 
-    - name: Download the latest GitHub Actions self-hosted runner version
+    - name: Download GitHub Actions runner
+      become: no
+      become_user: "{{ runner_user }}"
       get_url:
-        url: "https://github.com/actions/runner/releases/latest/download/actions-runner-linux-x64.tar.gz"
-        dest: /home/{{ ansible_user }}/actions-runner/actions-runner.tar.gz
-        mode: '0755'
+        url: "https://github.com/actions/runner/releases/download/v{{ runner_version }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
+        dest: "{{ runner_home }}/actions-runner/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
 
-    - name: Extract GitHub Actions self-hosted runner
+    - name: Extract GitHub Actions runner
+      become: no
+      become_user: "{{ runner_user }}"
       unarchive:
-        src: /home/{{ ansible_user }}/actions-runner/actions-runner.tar.gz
-        dest: /home/{{ ansible_user }}/actions-runner
+        src: "{{ runner_home }}/actions-runner/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
+        dest: "{{ runner_home }}/actions-runner"
         remote_src: yes
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
 
-    - name: Verify if svc.sh script exists
-      stat:
-        path: /home/{{ ansible_user }}/actions-runner/svc.sh
-      register: svc_sh_status
+    - name: Configure GitHub Actions runner
+      become: no
+      become_user: "{{ runner_user }}"
+      command: >
+        {{ runner_home }}/actions-runner/config.sh --url https://github.com/{{ github_org }} --token {{ github_token }} --labels {{ runner_labels }} --unattended
 
-    - name: Fail if svc.sh is missing
-      fail:
-        msg: "svc.sh script is missing in /home/{{ ansible_user }}/actions-runner"
-      when: not svc_sh_status.stat.exists
+    - name: Setup systemd service for runner
+      copy:
+        dest: "/etc/systemd/system/github-actions-runner.service"
+        content: |
+          [Unit]
+          Description=GitHub Actions Runner
+          After=network.target
 
-    - name: Ensure svc.sh script is executable
-      file:
-        path: /home/{{ ansible_user }}/actions-runner/svc.sh
-        mode: '0755'
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-        state: file
-      when: svc_sh_status.stat.exists
+          [Service]
+          ExecStart={{ runner_home }}/actions-runner/bin/runsvc.sh
+          User={{ runner_user }}
+          WorkingDirectory={{ runner_home }}/actions-runner
 
-    - name: Install GitHub Actions self-hosted runner
-      shell: |
-        ./svc.sh install {{ ansible_user }}
-      args:
-        chdir: /home/{{ ansible_user }}/actions-runner
-      become_user: "{{ ansible_user }}"
-      when: svc_sh_status.stat.exists
+          [Install]
+          WantedBy=multi-user.target
+      notify:
+        - Start GitHub Actions Runner
 
-    - name: Enable rootless Podman
-      shell: |
-        loginctl enable-linger {{ ansible_user }}
-      become_user: "{{ ansible_user }}"
-
-    - name: Set up SELinux permissions for rootless Podman
-      command: |
-        sudo setsebool container_manage_cgroup 1
-      args:
-        warn: no
-
-    - name: Configure SELinux for Podman and GitHub Actions runner
-      command: |
-        sudo semanage permissive -a container_t
-      args:
-        warn: no
-
-    - name: Start GitHub Actions self-hosted runner service
-      shell: |
-        ./svc.sh start
-      args:
-        chdir: /home/{{ ansible_user }}/actions-runner
-      become_user: "{{ ansible_user }}"
-      when: svc_sh_status.stat.exists
+  handlers:
+    - name: Start GitHub Actions Runner
+      systemd:
+        name: github-actions-runner.service
+        state: started
+        enabled: yes
