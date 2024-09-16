@@ -8,7 +8,7 @@
     runner_home: /home/runner
     runner_version: 2.319.0
     github_org: redhatryan/podman-actions
-    github_token: AYKPCABTXS234QV3HP7JYUTG46CI6
+    github_token: "{{ lookup('env', 'GITHUB_TOKEN') }}"
     runner_labels: self-hosted,x64,podman
 
   tasks:
@@ -48,25 +48,23 @@
         create: yes
         line: '{{ runner_user }} ALL=(ALL) NOPASSWD:ALL'
 
-    - name: Enable lingering for runner user
-      command: loginctl enable-linger {{ runner_user }}
-
-    - name: Create GitHub Actions runner directory
+    - name: Ensure GitHub Actions runner directory exists and is writable
       file:
         path: "{{ runner_home }}/actions-runner"
         state: directory
         owner: "{{ runner_user }}"
         group: "{{ runner_user }}"
+        mode: '0755'
 
     - name: Download GitHub Actions runner
-      become: no
+      become: yes
       become_user: "{{ runner_user }}"
       get_url:
         url: "https://github.com/actions/runner/releases/download/v{{ runner_version }}/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
         dest: "{{ runner_home }}/actions-runner/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
 
     - name: Extract GitHub Actions runner
-      become: no
+      become: yes
       become_user: "{{ runner_user }}"
       unarchive:
         src: "{{ runner_home }}/actions-runner/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
@@ -74,7 +72,7 @@
         remote_src: yes
 
     - name: Configure GitHub Actions runner
-      become: no
+      become: yes
       become_user: "{{ runner_user }}"
       command: >
         {{ runner_home }}/actions-runner/config.sh --url https://github.com/{{ github_org }} --token {{ github_token }} --labels {{ runner_labels }} --unattended
