@@ -6,9 +6,9 @@
   vars:
     runner_user: runner
     runner_home: /home/runner
-    runner_version: 2.317.0
+    runner_version: 2.319.0
     github_org: redhatryan/podman-actions
-    github_token: "{{ lookup('env', 'GITHUB_TOKEN') }}"  # Secure the token
+    github_token: AYKPCABTXS234QV3HP7JYUTG46CI6
     runner_labels: self-hosted,x64,podman
 
   tasks:
@@ -47,21 +47,6 @@
         path: /etc/sudoers.d/{{ runner_user }}
         create: yes
         line: '{{ runner_user }} ALL=(ALL) NOPASSWD:ALL'
-
-    - name: Enable and start rootless Podman socket
-      become_user: "{{ runner_user }}"
-      systemd:
-        name: podman.socket
-        state: started
-        enabled: yes
-        scope: user
-        daemon_reload: yes
-
-    - name: Set Docker Host environment variable
-      lineinfile:
-        path: /home/{{ runner_user }}/.bashrc
-        line: 'export DOCKER_HOST="unix://$(podman info -f "{{.Host.RemoteSocket.Path}}")"'
-        state: present
 
     - name: Enable lingering for runner user
       command: loginctl enable-linger {{ runner_user }}
@@ -111,6 +96,16 @@
           WantedBy=multi-user.target
       notify:
         - Start GitHub Actions Runner
+
+    - name: Enable and start rootless Podman socket
+      become: yes
+      become_user: "{{ runner_user }}"
+      systemd:
+        name: podman.socket
+        state: started
+        enabled: yes
+        scope: user
+        daemon_reload: yes
 
   handlers:
     - name: Start GitHub Actions Runner
