@@ -21,5 +21,6 @@ To make the setup easier, a script is provided to automatically install these pr
 1. Clone the repository or download the playbook file.
 
    ```bash
-git clone https://github.com/redhatryan/podman-actions.git
-cd podman/actions/latest/_setup
+   git clone https://github.com/redhatryan/podman-actions.git
+   cd podman/actions/latest/_setup
+   ```
