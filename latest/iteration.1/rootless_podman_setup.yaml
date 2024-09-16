@@ -4,6 +4,7 @@
   connection: local
   become: yes
   vars:
+    ansible_user: runner
     runner_user: runner
     runner_home: /home/runner
     runner_version: 2.319.0
