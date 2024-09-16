@@ -8,7 +8,7 @@
     runner_home: /home/runner
     runner_version: 2.319.0
     github_org: redhatryan/podman-actions
-    github_token: AYKPCADDD27WAJPLFDMIJPDG46HGI
+    github_token: AYKPCADURDGSIR3ND7IGWX3G46HTY
     runner_labels: self-hosted,x64,podman
 
   tasks:
