@@ -45,11 +45,10 @@
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
         mode: '0755'
-      when: ansible_facts['filesystem']['/home/' + ansible_user + '/actions-runner'] is not defined
 
-    - name: Download GitHub Actions self-hosted runner
+    - name: Download the latest GitHub Actions self-hosted runner version
       get_url:
-        url: https://github.com/actions/runner/releases/download/v2.308.0/actions-runner-linux-x64-2.308.0.tar.gz
+        url: "https://github.com/actions/runner/releases/latest/download/actions-runner-linux-x64.tar.gz"
         dest: /home/{{ ansible_user }}/actions-runner/actions-runner.tar.gz
         mode: '0755'
 
