@@ -1,8 +1,8 @@
 ---
 - name: Set up rootless Podman with GitHub Actions and SELinux
   hosts: localhost
-  become: yes
   connection: local
+  become: yes
   vars:
     runner_user: runner
     runner_home: /home/runner
@@ -70,6 +70,13 @@
         src: "{{ runner_home }}/actions-runner/actions-runner-linux-x64-{{ runner_version }}.tar.gz"
         dest: "{{ runner_home }}/actions-runner"
         remote_src: yes
+
+    - name: Install missing dependencies for .NET Core 6.0
+      command: ./bin/installdependencies.sh
+      args:
+        chdir: "{{ runner_home }}/actions-runner"
+      become: yes
+      become_user: "{{ runner_user }}"
 
     - name: Configure GitHub Actions runner
       become: yes
