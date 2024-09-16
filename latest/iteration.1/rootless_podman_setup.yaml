@@ -87,17 +87,17 @@
 
     - name: Install GitHub Actions self-hosted runner
       shell: |
-        ./svc.sh install {{ ansible_user }}
+        ./svc.sh install {{ runner_user }}
       args:
-        chdir: /home/{{ ansible_user }}/actions-runner
-      become_user: "{{ ansible_user }}"
+        chdir: /home/{{ runner_user }}/actions-runner
+      become_user: "{{ runner_user }}"
 
     - name: Start GitHub Actions self-hosted runner service
       shell: |
         ./svc.sh start
       args:
-        chdir: /home/{{ ansible_user }}/actions-runner
-      become_user: "{{ ansible_user }}"
+        chdir: /home/{{ runner_user }}/actions-runner
+      become_user: "{{ runner_user }}"
 
     - name: Setup systemd service for runner
       copy:
