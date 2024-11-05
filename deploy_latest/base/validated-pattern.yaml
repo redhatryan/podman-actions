@@ -2,7 +2,7 @@ apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
   name: rhel8-vp
-  namespace: validated-pattern
+  namespace: openshift-virtualization-os-images
   labels:
     app: rhel8-vp
     vm.kubevirt.io/template: rhel8-server-small
