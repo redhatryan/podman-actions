@@ -8,7 +8,7 @@ metadata:
     vm.kubevirt.io/template: rhel8-server-small
     vm.kubevirt.io/template.namespace: openshift
     vm.kubevirt.io/template.revision: '1'
-    vm.kubevirt.io/template.version: v0.27.0
+    vm.kubevirt.io/template.version: v0.31.1
 spec:
   dataVolumeTemplates:
     - apiVersion: cdi.kubevirt.io/v1beta1
